@@ -60,17 +60,20 @@ class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        let path = UIBezierPath(ovalIn: CGRect(center: bounds.mid, size: dropSize))
-        dropBehavior.addBarrier(path: path, named: PathNames.MiddleBarrier)
+
+  //      let path = UIBezierPath(ovalIn: CGRect(center: bounds.mid, size: dropSize))
+//        dropBehavior.addBarrier(path: path, named: PathNames.MiddleBarrier)
     }
     
     func grabDrop(recognizer: UIPanGestureRecognizer) {
         let gesturePoint = recognizer.location(in: self)
         switch recognizer.state {
         case .began: if let dropToAttatchTo = lastDrop, dropToAttatchTo.superview != nil {
+            
             attachment = UIAttachmentBehavior(item: dropToAttatchTo, attachedToAnchor: gesturePoint)
+            
             }
-            lastDrop = nil
+           // lastDrop = nil
             
         case .changed: attachment?.anchorPoint = gesturePoint
             
@@ -81,7 +84,9 @@ class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
     
     
     func removeCompletedRow() {
-        var dropsToRemove = [UIView]()
+        var dropsInCompleteRow = [UIView]()
+        var dropsToDelete = [UIView]()
+        var previousDropInRowColor: UIColor? = nil
         
         var hitTestRect = CGRect(origin: bounds.lowerLeft, size: dropSize)
         repeat {
@@ -99,14 +104,27 @@ class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
                 dropsTested += 1
             }
             if dropsTested == dropsPerRow {
-                dropsToRemove += dropsFound
+                dropsInCompleteRow += dropsFound
             }
-        } while dropsToRemove.count == 0 && hitTestRect.origin.y > bounds.minY
+        } while dropsInCompleteRow.count == 0 && hitTestRect.origin.y > bounds.minY
         
-        for drop in dropsToRemove {
-            dropBehavior.removeItem(item: drop)
-            drop.removeFromSuperview()
+        for drop in dropsInCompleteRow {
+    
+            if drop.backgroundColor == previousDropInRowColor || previousDropInRowColor == nil {
+                dropsToDelete.append(drop)
+                previousDropInRowColor = drop.backgroundColor
+                } else {
+                break
+            }
         }
+        
+        if dropsToDelete.count == dropsPerRow {
+            for drop in dropsToDelete {
+                dropBehavior.removeItem(item: drop)
+                drop.removeFromSuperview()
+            }
+        }
+        
     }
 
     private var lastDrop: UIView?
@@ -116,9 +134,24 @@ class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
         frame.origin.x = CGFloat.random(max: dropsPerRow) * dropSize.width
         
         let drop = UIView(frame: frame)
-        drop.backgroundColor = UIColor.random
+        drop.backgroundColor = UIColor.green
         addSubview(drop)
         dropBehavior.addItem(item: drop)
         lastDrop = drop
     }
+    
+    func addBlueDrop() {
+        var frame = CGRect(origin: CGPoint.zero, size: dropSize)
+        frame.origin.x = CGFloat.random(max: dropsPerRow) * dropSize.width
+        
+        let drop = UIView(frame: frame)
+        drop.backgroundColor = UIColor.blue
+        addSubview(drop)
+        dropBehavior.addItem(item: drop)
+        lastDrop = drop
+    }
+    
+    
+    
+    
 }

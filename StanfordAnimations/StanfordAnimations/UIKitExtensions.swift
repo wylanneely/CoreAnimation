@@ -16,7 +16,7 @@ extension CGFloat{
 
 extension UIColor {
     class var random: UIColor {
-        switch arc4random()%5 {
+        switch arc4random()%2 {
         case 0: return UIColor.green
         case 1: return UIColor.blue
         case 2: return UIColor.orange

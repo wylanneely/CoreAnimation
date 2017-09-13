@@ -13,13 +13,19 @@ class DropItViewController: UIViewController {
     @IBOutlet weak var gameView: DropItVeiw! {
         didSet {
             gameView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addDrop(recognizer:))))
+            
             gameView.addGestureRecognizer(UIPanGestureRecognizer(target: gameView, action: #selector(DropItVeiw.grabDrop(recognizer:))))
         }
     }
     
     func addDrop(recognizer: UITapGestureRecognizer){
         if recognizer.state == .ended {
+            
             gameView.addDrop()
+        }
+        
+        if recognizer.numberOfTouches == 2 {
+            print("2")
         }
     }
     
