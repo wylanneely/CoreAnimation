@@ -134,7 +134,7 @@ class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
         frame.origin.x = CGFloat.random(max: dropsPerRow) * dropSize.width
         
         let drop = UIView(frame: frame)
-        drop.backgroundColor = UIColor.green
+        drop.backgroundColor = UIColor.red
         addSubview(drop)
         dropBehavior.addItem(item: drop)
         lastDrop = drop

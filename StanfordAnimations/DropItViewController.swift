@@ -13,8 +13,16 @@ class DropItViewController: UIViewController {
     @IBOutlet weak var gameView: DropItVeiw! {
         didSet {
             gameView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addDrop(recognizer:))))
+            gameView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(addBlueDrop(recognizer:))))
             
             gameView.addGestureRecognizer(UIPanGestureRecognizer(target: gameView, action: #selector(DropItVeiw.grabDrop(recognizer:))))
+        }
+    }
+    
+    func addBlueDrop(recognizer: UILongPressGestureRecognizer){
+        if recognizer.state == .ended {
+            
+            gameView.addBlueDrop()
         }
     }
     
