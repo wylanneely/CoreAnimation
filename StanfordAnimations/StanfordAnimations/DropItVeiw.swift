@@ -20,6 +20,7 @@ class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
         removeCompletedRow()
     }
     
+    
     private let dropBehavior = FallingItemBehavior()
     
     var animating: Bool = false {
@@ -112,9 +113,10 @@ class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
     
             if drop.backgroundColor == previousDropInRowColor || previousDropInRowColor == nil {
                 dropsToDelete.append(drop)
-                previousDropInRowColor = drop.backgroundColor
+                    previousDropInRowColor = drop.backgroundColor
+                    
                 } else {
-                break
+                
             }
         }
         
