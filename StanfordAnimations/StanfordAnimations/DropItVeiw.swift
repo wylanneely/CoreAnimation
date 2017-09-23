@@ -25,6 +25,7 @@ class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
         didSet {
             if animating {
                 animator.addBehavior(dropBehavior)
+                updateRealGravity()
             } else {
                 animator.removeBehavior(dropBehavior)
             }
@@ -46,8 +47,20 @@ private let motionManager = CMMotionManager()
             if motionManager.isAccelerometerAvailable && !motionManager.isAccelerometerActive {
                 motionManager.accelerometerUpdateInterval = 0.25
                 motionManager.startAccelerometerUpdates(to: OperationQueue.main, withHandler: { [unowned self] (data, error) in
-                    if let dx = data?.acceleration.x, let dy = data?.acceleration.y {
+                    if self.dropBehavior.dynamicAnimator != nil {
+                    if var dx = data?.acceleration.x, var dy = data?.acceleration.y {
+                        switch UIDevice.current.orientation {
+                        case .portrait: dy = -dy
+                        case .portraitUpsideDown: break
+                        case .landscapeRight: swap(&dx, &dy)
+                        case .landscapeLeft: swap(&dx, &dy); dy = -dy
+                        default: dx = 0; dy = 0
+                        }
                         self.dropBehavior.gravity.gravityDirection = CGVector(dx: dx, dy: dy)
+                    }
+                }
+                    else {
+                        self.motionManager.stopAccelerometerUpdates()
                     }
                 })
             }
