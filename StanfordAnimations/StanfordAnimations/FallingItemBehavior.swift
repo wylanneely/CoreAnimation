@@ -10,7 +10,7 @@ import UIKit
 
 class FallingItemBehavior: UIDynamicBehavior {
 
-    private let gravity = UIGravityBehavior()
+    var gravity = UIGravityBehavior()
     private let collider: UICollisionBehavior = {
         let collider = UICollisionBehavior()
         collider.translatesReferenceBoundsIntoBoundary = true

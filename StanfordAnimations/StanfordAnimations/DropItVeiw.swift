@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreMotion
 
 class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
     
@@ -20,11 +21,7 @@ class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
         removeCompletedRow()
     }
     
-    
-    private let dropBehavior = FallingItemBehavior()
-    
     var animating: Bool = false {
-        
         didSet {
             if animating {
                 animator.addBehavior(dropBehavior)
@@ -33,6 +30,34 @@ class DropItVeiw: UIView, UIDynamicAnimatorDelegate {
             }
         }
     }
+    
+    private let dropBehavior = FallingItemBehavior()
+private let motionManager = CMMotionManager()
+            //MARK: - Gravity
+    
+    var realGravity: Bool = false {
+        didSet {
+            updateRealGravity()
+        }
+    }
+    
+    private func updateRealGravity(){
+        if realGravity {
+            if motionManager.isAccelerometerAvailable && !motionManager.isAccelerometerActive {
+                motionManager.accelerometerUpdateInterval = 0.25
+                motionManager.startAccelerometerUpdates(to: OperationQueue.main, withHandler: { [unowned self] (data, error) in
+                    if let dx = data?.acceleration.x, let dy = data?.acceleration.y {
+                        self.dropBehavior.gravity.gravityDirection = CGVector(dx: dx, dy: dy)
+                    }
+                })
+            }
+        }
+        else  { motionManager.stopAccelerometerUpdates()
+        }
+    
+    }
+    
+    
     
     private var attachment: UIAttachmentBehavior? {
         willSet {
